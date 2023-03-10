@@ -102,6 +102,9 @@
 
     async function begin() {
         try {
+
+            console.log("starting to probe");
+            
             $probingActive = true;
             assertValidProbeType();
 
@@ -116,7 +119,8 @@
                 "Probe",
                 "Done",
             ].filter<Step>(isStep);
-
+            console.log("steps: ",steps);
+            
             await stepCompleted("CheckProbe", probeContacted);
 
             if (probeType === "xyz") {
@@ -166,7 +170,8 @@
         ...writables: Array<Writable<any>>
     ) {
         currentStep = nextStep;
-
+        console.log("currentStep",currentStep);
+        
         if (!steps.includes(currentStep)) {
             return;
         }
@@ -178,11 +183,12 @@
             executeProbe();
         }
 
-        await Promise.race([
+        let result = await Promise.race([
             ...writables.map((writable) => waitForChange(writable)),
             waitForChange(cancelled),
         ]);
-
+        console.log("race result from promise",result);
+        
         if ($cancelled) {
             throw new Error("cancelled");
         }
@@ -238,6 +244,10 @@
         const xOffset = probeBlockWidth + cutterDiameterMetric / 2.0;
         const yOffset = probeBlockLength + cutterDiameterMetric / 2.0;
         const zOffset = probeBlockHeight;
+        console.log({probeBlockHeight,probeBlockLength,probeBlockWidth,slowSeek,fastSeek,xOffset,yOffset,zOffset});
+        
+
+        try {
 
         if (probeType === "z") {
             ControllerMethods.send(`
@@ -290,6 +300,10 @@
 
                 M2
             `);
+        }
+        }
+        catch (error) {
+        console.error("error while executing prob gcode",error)
         }
     }
 </script>

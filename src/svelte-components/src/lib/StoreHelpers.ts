@@ -12,6 +12,8 @@ export function listenForChange<T>(writable: Writable<T>, cb: (value: T) => void
 }
 
 export function waitForChange<T>(writable: Writable<T>): Promise<T> {
+    console.log("waiting for change: ",writable );
+
     return new Promise((resolve) => {
         listenForChange(writable, (value) => resolve(value));
     });
