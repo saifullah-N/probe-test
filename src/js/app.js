@@ -340,8 +340,11 @@ module.exports = new Vue({
                 if (typeof e.data != "object") {
                     return;
                 }
-
                 if (e.data.log && e.data.log.msg !== "Switch not found") {
+                    api.put(
+                      "write-log",
+                      `messge from app ${JSON.stringify(e.data)}`
+                    );
                     this.$broadcast("log", e.data.log);
 
                     if (Object.keys(e.data).length === 1) {

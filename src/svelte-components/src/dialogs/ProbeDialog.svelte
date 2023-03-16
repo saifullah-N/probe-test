@@ -23,6 +23,7 @@
     import PlaceZ from "../svgs/probe-place-z.svg?raw";
     import PutAwayXYZ from "../svgs/probe-put-away-xyz.svg?raw";
     import PutAwayZ from "../svgs/probe-put-away-z.svg?raw";
+    import {PUT} from "$lib/api"
 
     const ValidSteps = [
         "None",
@@ -103,7 +104,7 @@
     async function begin() {
         try {
 
-            console.log("starting to probe");
+            PUT("write-log","starting to probe");
             
             $probingActive = true;
             assertValidProbeType();
@@ -119,7 +120,6 @@
                 "Probe",
                 "Done",
             ].filter<Step>(isStep);
-            console.log("steps: ",steps);
             
             await stepCompleted("CheckProbe", probeContacted);
 
@@ -170,7 +170,7 @@
         ...writables: Array<Writable<any>>
     ) {
         currentStep = nextStep;
-        console.log("currentStep",currentStep);
+        PUT("write-log",`currentStep ${currentStep}`);
         
         if (!steps.includes(currentStep)) {
             return;
@@ -187,7 +187,8 @@
             ...writables.map((writable) => waitForChange(writable)),
             waitForChange(cancelled),
         ]);
-        console.log("race result from promise",result);
+        
+        PUT("write-log",`race result from promise ${writable.join(" ")} result`);
         
         if ($cancelled) {
             throw new Error("cancelled");
@@ -244,9 +245,7 @@
         const xOffset = probeBlockWidth + cutterDiameterMetric / 2.0;
         const yOffset = probeBlockLength + cutterDiameterMetric / 2.0;
         const zOffset = probeBlockHeight;
-        console.log({probeBlockHeight,probeBlockLength,probeBlockWidth,slowSeek,fastSeek,xOffset,yOffset,zOffset});
         
-
         try {
 
         if (probeType === "z") {

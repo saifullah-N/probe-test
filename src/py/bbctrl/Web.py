@@ -45,6 +45,12 @@ def check_password(password):
     if s.split('$') != current: raise HTTPError(401, 'Wrong password')
 
 
+class WriteLogFromWeb(bbctrl.APIHandler):
+    def put_ok(self):
+        value = self.json
+        self.get_log().info("WriteLogFromWeb :", str(value))
+        # subprocess.check_call('sudo mount -o remount,rw /boot | sudo su', shell=True)
+
 
 class RebootHandler(bbctrl.APIHandler):
     def put_ok(self):
@@ -666,6 +672,7 @@ class Web(tornado.web.Application):
             (r'/api/screen-rotation', ScreenRotationHandler),
             (r'/api/time', TimeHandler),
             (r'/api/remote-diagnostics', RemoteDiagnosticsHandler),
+            (r'/api/write-log', WriteLogFromWeb),
             (r'/(.*)', StaticFileHandler,
              {'path': bbctrl.get_resource('http/'),
               'default_filename': 'index.html'}),
