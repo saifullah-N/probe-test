@@ -48,7 +48,7 @@ def check_password(password):
 class WriteLogFromWeb(bbctrl.APIHandler):
     def put_ok(self):
         value = self.json
-        self.get_log().info("WriteLogFromWeb :", str(value))
+        self.get_log().info("WriteLogFromWeb :"+ str(value))
         # subprocess.check_call('sudo mount -o remount,rw /boot | sudo su', shell=True)
 
 
