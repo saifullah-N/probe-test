@@ -188,7 +188,7 @@
             waitForChange(cancelled),
         ]);
         
-        PUT("write-log",{msg:`race result from promise ${writable.join(" ")} result`});
+        PUT("write-log",{msg:`race result from promise ${currentStep + result}`});
         
         if ($cancelled) {
             throw new Error("cancelled");
