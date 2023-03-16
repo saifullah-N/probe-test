@@ -168,8 +168,12 @@ module.exports = new Vue({
 
         send: function(msg) {
             if (this.status == "connected") {
-            console.log("log the message sent from app.js : ",msg);
-                this.sock.send(msg);
+              console.log("log the message sent from app.js : ", msg);
+              this.sock.send(msg);
+              api.put(
+                "write-log",
+                `messge from app ${JSON.stringify(msg)}`
+              );
             }
         },
 
@@ -341,10 +345,10 @@ module.exports = new Vue({
                     return;
                 }
                 if (e.data.log && e.data.log.msg !== "Switch not found") {
-                    api.put(
-                      "write-log",
-                      `messge from app ${JSON.stringify(e.data)}`
-                    );
+                    // api.put(
+                    //   "write-log",
+                    //   `messge from app ${JSON.stringify(e.data)}`
+                    // );
                     this.$broadcast("log", e.data.log);
 
                     if (Object.keys(e.data).length === 1) {
