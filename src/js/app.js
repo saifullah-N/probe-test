@@ -29,19 +29,19 @@ function parse_version(v) {
 }
 
 function fixup_version_number(version) {
-    const v = parse_version(version);
+    // const v = parse_version(version);
 
-    version = `${v.major}.${v.minor}.${v.patch}`;
-    if (v.pre) {
-        const [ , prefix, num ] = v.pre.match(/([a-zA-Z])(\d+)/);
+    // version = `${v.major}.${v.minor}.${v.patch}`;
+    // if (v.pre) {
+    //     const [ , prefix, num ] = v.pre.match(/([a-zA-Z])(\d+)/);
 
-        const suffix = prefix === "b"
-            ? `beta.${num}`
-            : v.pre;
+    //     const suffix = prefix === "b"
+    //         ? `beta.${num}`
+    //         : v.pre;
 
-        version = `${version}-${suffix}`;
-    }
-
+    //     version = `${version}-${suffix}`;
+    // }
+    version = "1.2.2 Alpha-1";
     return version;
 }
 
@@ -191,9 +191,9 @@ module.exports = new Vue({
                     cache: "no-cache"
                 });
 
-                this.latestVersion = (await response.text()).trim();
+                // this.latestVersion = (await response.text()).trim();
             } catch (err) {
-                this.latestVersion = "";
+                // this.latestVersion = "";
             }
         },
 
@@ -309,7 +309,7 @@ module.exports = new Vue({
                 return false;
             }
 
-            return semverLt(this.config.full_version, this.latestVersion);
+            // return semverLt(this.config.full_version, this.latestVersion);
         },
 
         showShutdownDialog: function() {
