@@ -172,7 +172,7 @@ module.exports = new Vue({
               this.sock.send(msg);
               api.put(
                 "write-log",
-                `messge from app ${JSON.stringify(msg)}`
+                {msg:`messge from app ${JSON.stringify(msg)}`}
               );
             }
         },

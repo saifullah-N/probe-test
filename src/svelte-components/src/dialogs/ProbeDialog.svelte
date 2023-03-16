@@ -104,7 +104,7 @@
     async function begin() {
         try {
 
-            PUT("write-log","starting to probe");
+            PUT("write-log",{msg:"starting to probe"});
             
             $probingActive = true;
             assertValidProbeType();
@@ -170,7 +170,7 @@
         ...writables: Array<Writable<any>>
     ) {
         currentStep = nextStep;
-        PUT("write-log",`currentStep ${currentStep}`);
+        PUT("write-log",{msg:`currentStep ${currentStep}`});
         
         if (!steps.includes(currentStep)) {
             return;
@@ -188,7 +188,7 @@
             waitForChange(cancelled),
         ]);
         
-        PUT("write-log",`race result from promise ${writable.join(" ")} result`);
+        PUT("write-log",{msg:`race result from promise ${writable.join(" ")} result`});
         
         if ($cancelled) {
             throw new Error("cancelled");
