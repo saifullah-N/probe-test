@@ -139,15 +139,15 @@
                 }
                 
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
-                PUT("write-log",{"PlaceProbeBock-userAcknowledged":userAcknowledged})
+                PUT("write-log",{"PlaceProbeBock-userAcknowledged":userAcknowledged,probingStarted:$probingStarted})
                 await stepCompleted("Probe", probingComplete, probingFailed);
-                await PUT("write-log",{"probingComplete-probingFailed": [probingComplete , probingFailed]})
+                await PUT("write-log",{"probingComplete-probingFailed": [$probingComplete , $probingFailed ] ,probingStarted:$probingStarted})
                 await stepCompleted("Done", userAcknowledged);
-                PUT("write-log",{"Done-userAcknowledged":userAcknowledged})
-                await PUT("write-log",{"probingComplete-probingFailed": [probingComplete , probingFailed]})
+                PUT("write-log",{"Done-userAcknowledged":userAcknowledged ,probingStarted:$probingStarted})
+                await PUT("write-log",{"probingComplete-probingFailed": [$probingComplete , $probingFailed],probingStarted:$probingStarted})
             if (probeType === "xyz") {
                 ControllerMethods.gotoZero("xy");
-                PUT("write-log",{goToZero:"called-152"});
+                PUT("write-log",{goToZero:"called-152",probingStarted:$probingStarted});
 
             }
         } catch (err) {
@@ -205,7 +205,7 @@
             waitForChange(cancelled),
         ]);
         
-        PUT("write-log",{msg:`race result from promise ${$currentStep + result}`});
+        PUT("write-log",{msg:`race result from promise ${$currentStep + result}`,probingStarted:$probingStarted});
         
         if ($cancelled) {
             throw new Error("cancelled");
@@ -318,7 +318,7 @@
             `);
         }
 
-        PUT("write-log",{executeProbe:"Complete"});
+        PUT("write-log",{executeProbe:"Complete",probingStarted:$probingStarted});
     }
     catch (error) {
             PUT("write-log",{executeProbe:`ERROR ${error}`});
