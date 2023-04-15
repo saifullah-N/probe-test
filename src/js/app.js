@@ -29,19 +29,18 @@ function parse_version(v) {
 }
 
 function fixup_version_number(version) {
-    // const v = parse_version(version);
+    const v = parse_version(version);
 
-    // version = `${v.major}.${v.minor}.${v.patch}`;
-    // if (v.pre) {
-    //     const [ , prefix, num ] = v.pre.match(/([a-zA-Z])(\d+)/);
+    version = `${v.major}.${v.minor}.${v.patch}`;
+    if (v.pre) {
+        const [ , prefix, num ] = v.pre.match(/([a-zA-Z])(\d+)/);
 
-    //     const suffix = prefix === "b"
-    //         ? `beta.${num}`
-    //         : v.pre;
+        const suffix = prefix === "b"
+            ? `beta.${num}`
+            : v.pre;
 
-    //     version = `${version}-${suffix}`;
-    // }
-    version = "1.2.2 Alpha-1";
+        version = `${version}-${suffix}`;
+    }
     return version;
 }
 
@@ -95,7 +94,7 @@ function update_object(dst, src, remove) {
         }
     }
 }
-
+// 
 module.exports = new Vue({
     el: "body",
 
