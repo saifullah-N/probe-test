@@ -139,14 +139,11 @@
                 }
                 
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
-                localStorage.setItem("PlaceProbeBock-userAcknowledged",userAcknowledged)
+                PUT("write-log",{"PlaceProbeBock-userAcknowledged":userAcknowledged})
                 await stepCompleted("Probe", probingComplete, probingFailed);
-                localStorage.setItem("probingComplete-probingFailed",String(probingComplete)+ String(probingFailed))
-            await stepCompleted("Done", userAcknowledged);
-                localStorage.setItem("Done-userAcknowledged",userAcknowledged)
-            x = JSON.stringify(localStorage)
-            y = JSON.parse(x)
-            localStorage.clear()                   
+                PUT("write-log",{"probingComplete-probingFailed": String(probingComplete)+ String(probingFailed)})
+                await stepCompleted("Done", userAcknowledged);
+                PUT("write-log",{"Done-userAcknowledged":userAcknowledged})
             if (probeType === "xyz") {
                 ControllerMethods.gotoZero("xy");
                 PUT("write-log",{goToZero:"called-152"});
@@ -160,7 +157,8 @@
             PUT("write-log",{finally:"called"});
             $probingActive = false;
             $currentStep = "None";
-
+            
+            PUT("write-log",{probingStartedInFinally:$probingStarted});
             if ($probingStarted) {
                 ControllerMethods.stop();
             }
