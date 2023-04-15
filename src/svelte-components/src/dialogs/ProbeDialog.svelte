@@ -72,7 +72,7 @@
 
     export let open;
     export let probeType: "xyz" | "z";
-    let currentStep: Step = "None";
+    let currentStep: Writable<Step> = writable("None");
     let cutterDiameterString: string = "";
     let cutterDiameterMetric: number;
     let showCancelButton = true;
@@ -84,32 +84,39 @@
     };
 
     $: metric = $Config.settings?.units === "METRIC";
+    localStorage.setItem("metric",String(metric))
     $: cutterDiameterMetric = numberWithUnit
         .parse(cutterDiameterString)
         ?.toMetric();
-
+    localStorage.setItem("cutterDiameterSet","true")
     $: if (open) {
         cutterDiameterString = localStorage.getItem("cutterDiameter") ?? "";
 
         // Svelte appears not to like it when you invoke
         // an async function from a reactive statement, so we
         // use requestAnimationFrame to call 'begin' at a later moment.
+        localStorage.setItem("calling begin reqestAnimationFrame","line 98")
         requestAnimationFrame(begin);
     }
 
     $: if (cutterDiameterString) {
         updateButtons();
+        localStorage.setItem("update buttons","line 104")
     }
 
     async function begin() {
         try {
-
-            PUT("write-log",{msg:"starting to probe"});
-            
+            localStorage.setItem("starting to probe","begin -108")
+            let  x = JSON.stringify(localStorage)
+            let y = JSON.parse(x)
+            PUT("write-log",y);
+            localStorage.clear()
             $probingActive = true;
             assertValidProbeType();
-
+            localStorage.setItem("probingActive",$probingActive)
             $probingFailed = false;
+            localStorage.setItem("assertValidProbeType","completed")
+            localStorage.setItem("probingFailed",$probingFailed)
 
             const enableSafety = $Config.settings["probing-prompts"];
 
@@ -122,29 +129,37 @@
             ].filter<Step>(isStep);
             
             await stepCompleted("CheckProbe", probeContacted);
-
+            localStorage.setItem("moved after CheckProbe","true")
             if (probeType === "xyz") {
                 await stepCompleted("BitDimensions", userAcknowledged);
                 localStorage.setItem(
                     "cutterDiameter",
                     numberWithUnit.normalize(cutterDiameterString)
-                );
-            }
-
-            await stepCompleted("PlaceProbeBlock", userAcknowledged);
-            await stepCompleted("Probe", probingComplete, probingFailed);
+                    );
+                }
+                
+                await stepCompleted("PlaceProbeBlock", userAcknowledged);
+                localStorage.setItem("PlaceProbeBock-userAcknowledged",userAcknowledged)
+                await stepCompleted("Probe", probingComplete, probingFailed);
+                localStorage.setItem("probingComplete-probingFailed",String(probingComplete)+ String(probingFailed))
             await stepCompleted("Done", userAcknowledged);
-
+                localStorage.setItem("Done-userAcknowledged",userAcknowledged)
+            x = JSON.stringify(localStorage)
+            y = JSON.parse(x)
+            localStorage.clear()                   
             if (probeType === "xyz") {
                 ControllerMethods.gotoZero("xy");
+                PUT("write-log",{goToZero:"called-152"});
+
             }
         } catch (err) {
             if (err.message !== "cancelled") {
                 console.error("Error during probing:", err);
             }
         } finally {
+            PUT("write-log",{finally:"called"});
             $probingActive = false;
-            currentStep = "None";
+            $currentStep = "None";
 
             if ($probingStarted) {
                 ControllerMethods.stop();
@@ -169,17 +184,20 @@
         nextStep: Step,
         ...writables: Array<Writable<any>>
     ) {
-        currentStep = nextStep;
-        PUT("write-log",{msg:`currentStep ${currentStep}`});
+        $currentStep = nextStep;
+        PUT("write-log",{msg:`$currentStep ${$currentStep}`});
         
-        if (!steps.includes(currentStep)) {
+        if (!steps.includes($currentStep)) {
             return;
         }
 
         clearFlags();
         updateButtons();
+        PUT("write-log",{msg:`clearFlags cancelled:${$cancelled} , probeContacted:${$probeContacted} ,probingStarted: ${$probingStarted} 
+        probingComplete : ${$probingComplete} 
+        userAcknowledged : ${$userAcknowledged}`});
 
-        if (currentStep === "Probe") {
+        if ($currentStep === "Probe") {
             executeProbe();
         }
 
@@ -188,7 +206,7 @@
             waitForChange(cancelled),
         ]);
         
-        PUT("write-log",{msg:`race result from promise ${currentStep + result}`});
+        PUT("write-log",{msg:`race result from promise ${$currentStep + result}`});
         
         if ($cancelled) {
             throw new Error("cancelled");
@@ -212,7 +230,7 @@
             allowClose: false,
         };
 
-        switch (currentStep) {
+        switch ($currentStep) {
             case "CheckProbe":
             case "Probe":
                 nextButton.disabled = true;
@@ -300,8 +318,11 @@
                 M2
             `);
         }
-        }
-        catch (error) {
+
+        PUT("write-log",{executeProbe:"Complete"});
+    }
+    catch (error) {
+            PUT("write-log",{executeProbe:`ERROR ${error}`});
         console.error("error while executing prob gcode",error)
         }
     }
@@ -320,18 +341,18 @@
     <Content id="probe-dialog-content" style="overflow: visible;">
         <div class="steps">
             <p>
-                <b>Step {steps.indexOf(currentStep) + 1} of {steps.length}</b>
+                <b>Step {steps.indexOf($currentStep) + 1} of {steps.length}</b>
             </p>
             <ul>
                 {#each steps as step}
-                    <li class:active={currentStep === step}>
+                    <li class:active={$currentStep === step}>
                         {stepLabels[step]}
                     </li>
                 {/each}
             </ul>
         </div>
         <div style="width: 100%">
-            {#if currentStep === "CheckProbe"}
+            {#if $currentStep === "CheckProbe"}
                 <p>
                     Attach the probe magnet to the collet, then touch the probe
                     block to the bit.
@@ -342,7 +363,7 @@
                     size="300px"
                     class="probe-icon-svg"
                 />
-            {:else if currentStep === "BitDimensions"}
+            {:else if $currentStep === "BitDimensions"}
                 <TextFieldWithOptions
                     label="Cutter diameter"
                     variant="filled"
@@ -355,7 +376,7 @@
                 />
 
                 <Icon data={BitDiameter} size="150px" class="probe-icon-svg" />
-            {:else if currentStep === "PlaceProbeBlock"}
+            {:else if $currentStep === "PlaceProbeBlock"}
                 <p>
                     {#if probeType === "xyz"}
                         Place the probe block face up, on the lower-left corner
@@ -377,11 +398,11 @@
                     The probing procedure will begin as soon as you click
                     'Next'.
                 </p>
-            {:else if currentStep === "Probe"}
+            {:else if $currentStep === "Probe"}
                 <p>Probing in progress...</p>
 
                 <LinearProgress indeterminate />
-            {:else if currentStep === "Done"}
+            {:else if $currentStep === "Done"}
                 {#if $probingFailed}
                     <h3>Emergency Stop!</h3>
 
