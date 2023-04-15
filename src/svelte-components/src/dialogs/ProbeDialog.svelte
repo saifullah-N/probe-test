@@ -139,11 +139,11 @@
                 }
                 
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
-                PUT("write-log",{"PlaceProbeBock-userAcknowledged":userAcknowledged,probingStarted:$probingStarted})
+                PUT("write-log",{"PlaceProbeBock-userAcknowledged":$userAcknowledged,probingStarted:$probingStarted})
                 await stepCompleted("Probe", probingComplete, probingFailed);
                 await PUT("write-log",{"probingComplete-probingFailed": [$probingComplete , $probingFailed ] ,probingStarted:$probingStarted})
                 await stepCompleted("Done", userAcknowledged);
-                PUT("write-log",{"Done-userAcknowledged":userAcknowledged ,probingStarted:$probingStarted})
+                PUT("write-log",{"Done-userAcknowledged":$userAcknowledged ,probingStarted:$probingStarted})
                 await PUT("write-log",{"probingComplete-probingFailed": [$probingComplete , $probingFailed],probingStarted:$probingStarted})
             if (probeType === "xyz") {
                 ControllerMethods.gotoZero("xy");
