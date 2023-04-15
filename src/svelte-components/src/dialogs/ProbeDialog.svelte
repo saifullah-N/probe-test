@@ -141,9 +141,10 @@
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
                 PUT("write-log",{"PlaceProbeBock-userAcknowledged":userAcknowledged})
                 await stepCompleted("Probe", probingComplete, probingFailed);
-                PUT("write-log",{"probingComplete-probingFailed": String(probingComplete)+ String(probingFailed)})
+                await PUT("write-log",{"probingComplete-probingFailed": [probingComplete , probingFailed]})
                 await stepCompleted("Done", userAcknowledged);
                 PUT("write-log",{"Done-userAcknowledged":userAcknowledged})
+                await PUT("write-log",{"probingComplete-probingFailed": [probingComplete , probingFailed]})
             if (probeType === "xyz") {
                 ControllerMethods.gotoZero("xy");
                 PUT("write-log",{goToZero:"called-152"});
