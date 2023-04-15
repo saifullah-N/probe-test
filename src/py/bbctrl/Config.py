@@ -155,8 +155,10 @@ class Config(object):
 
     def _upgrade(self, config):
         version = config['version']
-        version = version.split('b')[0] # Strip off any "beta" suffix
-        version = tuple(map(int, version.split('.'))) # Break it into a tuple of integers
+        version = version.split('b')[0]  # Strip off any "beta" suffix
+        version = version.split('-')[0]
+        # Break it into a tuple of integers
+        version = tuple(map(int, version.split('.')))
 
         if version < (1, 0, 7):
             config['settings']['max-deviation'] = 0.001
