@@ -20,6 +20,8 @@ export function waitForChange<T>(writable: Writable<T>): Promise<T> {
     console.log("waiting for change: ",writable );
 
     return new Promise((resolve) => {
+        console.log('23 before resolve');
+        
         listenForChange(writable, (value) => resolve(value)); 
     });
 }
