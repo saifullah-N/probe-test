@@ -23,5 +23,5 @@ export function waitForChange<T>(writable: Writable<T>): Promise<T> {
         listenForChange(writable, (value) => resolve(value)); 
     });
 }
-https://stackoverflow.com/questions/64862161/svelte-store-function-update?rq=1
-https://stackoverflow.com/questions/64862161/svelte-store-function-update?rq=1
+//https://stackoverflow.com/questions/64862161/svelte-store-function-update?rq=1
+//https://stackoverflow.com/questions/64862161/svelte-store-function-update?rq=1
