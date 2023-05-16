@@ -7,7 +7,7 @@ export function listenForChange<T>(writable: Writable<T>, cb: (value: T) => void
         console.log({value , priorValue}, typeof(value))
 
         if (value !== priorValue) {
-            console.log("inside if " , {value ,  priorValue} );
+            console.log("inside if " , {value ,  priorValue});
             
             unsubscribe();
 
@@ -16,11 +16,11 @@ export function listenForChange<T>(writable: Writable<T>, cb: (value: T) => void
     });
 }
 
-export function waitForChange<T>(writable: Writable<T>): Promise<T> {
-    console.log("waiting for change: ",{writable} );
+export function waitForChange<T>(name:string,writable: Writable<T>): Promise<T> {
+    console.log("waiting for change: ",get(writable) ,name);
 
     return new Promise((resolve) => {
-        console.log('23 before resolve');
+        console.log('23 before resolve',name);
         
         listenForChange(writable, (value) => resolve(value)); 
     });

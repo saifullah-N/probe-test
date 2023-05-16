@@ -201,8 +201,8 @@
         }
 
         let result = await Promise.race([
-            ...writables.map((writable) => waitForChange(writable)),
-            waitForChange(cancelled),
+            ...writables.map((writable) => waitForChange(nextStep,writable)),
+            waitForChange("cancelled",cancelled),
         ]);
         
         PUT("write-log",{msg:`race result from promise ${$currentStep + result}`,probingStarted:$probingStarted});
