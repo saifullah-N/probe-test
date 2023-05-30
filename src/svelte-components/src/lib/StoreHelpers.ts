@@ -1,7 +1,8 @@
 import { get, type Writable } from "svelte/store";
 
-export function waitForChange<T>(writable: Writable<T>): Promise<T> {
-  let unsubscribe:()=>{};
+export function waitForChange<T>(name:string,writable: Writable<T>): Promise<T> {
+    console.log("waiting for change: ",get(writable) ,name);
+    let unsubscribe:()=>{};
   const promise = new Promise(resolve => {
     let receivedInitial = false;
     let previousValue : any;
