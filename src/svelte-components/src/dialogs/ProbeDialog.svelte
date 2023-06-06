@@ -84,39 +84,39 @@
     };
 
     $: metric = $Config.settings?.units === "METRIC";
-    localStorage.setItem("metric",String(metric))
+    // localStorage.setItem("metric",String(metric))
     $: cutterDiameterMetric = numberWithUnit
         .parse(cutterDiameterString)
         ?.toMetric();
-    localStorage.setItem("cutterDiameterSet","true")
+    // localStorage.setItem("cutterDiameterSet","true")
     $: if (open) {
         cutterDiameterString = localStorage.getItem("cutterDiameter") ?? "";
 
         // Svelte appears not to like it when you invoke
         // an async function from a reactive statement, so we
         // use requestAnimationFrame to call 'begin' at a later moment.
-        localStorage.setItem("calling begin reqestAnimationFrame","line 98")
+        // localStorage.setItem("calling begin reqestAnimationFrame","line 98")
         requestAnimationFrame(begin);
     }
 
     $: if (cutterDiameterString) {
         updateButtons();
-        localStorage.setItem("update buttons","line 104")
+        // localStorage.setItem("update buttons","line 104")
     }
 
     async function begin() {
         try {
-            localStorage.setItem("starting to probe","begin -108")
-            let  x = JSON.stringify(localStorage)
+            // localStorage.setItem("starting to probe","begin -108")
+            let  x =  JSON.stringify(localStorage)
             let y = JSON.parse(x)
             PUT("write-log",y);
-            localStorage.clear()
+            // localStorage.clear()
             $probingActive = true;
             assertValidProbeType();
-            localStorage.setItem("probingActive",$probingActive)
+            // localStorage.setItem("probingActive",$probingActive)
             $probingFailed = false;
-            localStorage.setItem("assertValidProbeType","completed")
-            localStorage.setItem("probingFailed",$probingFailed)
+            // localStorage.setItem("assertValidProbeType","completed")
+            // localStorage.setItem("probingFailed",$probingFailed)
 
             const enableSafety = $Config.settings["probing-prompts"];
 
@@ -129,13 +129,10 @@
             ].filter<Step>(isStep);
             
             await stepCompleted("CheckProbe", probeContacted);
-            localStorage.setItem("moved after CheckProbe","true")
+            // localStorage.setItem("moved after CheckProbe","true")
             if (probeType === "xyz") {
                 await stepCompleted("BitDimensions", userAcknowledged);
-                localStorage.setItem(
-                    "cutterDiameter",
-                    numberWithUnit.normalize(cutterDiameterString)
-                    );
+                // localStorage.setItem( "cutterDiameter", numberWithUnit.normalize(cutterDiameterString));
                 }
                 
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
