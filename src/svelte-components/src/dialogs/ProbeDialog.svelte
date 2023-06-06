@@ -84,7 +84,7 @@
     };
 
     $: metric = $Config.settings?.units === "METRIC";
-    // localStorage.setItem("metric",String(metric))
+    localStorage.setItem("metric",String(metric))
     $: cutterDiameterMetric = numberWithUnit
         .parse(cutterDiameterString)
         ?.toMetric();
@@ -132,7 +132,7 @@
             // localStorage.setItem("moved after CheckProbe","true")
             if (probeType === "xyz") {
                 await stepCompleted("BitDimensions", userAcknowledged);
-                // localStorage.setItem( "cutterDiameter", numberWithUnit.normalize(cutterDiameterString));
+                localStorage.setItem( "cutterDiameter", numberWithUnit.normalize(cutterDiameterString));
                 }
                 
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
