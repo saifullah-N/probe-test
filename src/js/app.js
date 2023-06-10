@@ -167,12 +167,7 @@ module.exports = new Vue({
 
         send: function(msg) {
             if (this.status == "connected") {
-              console.log("log the message sent from app.js : ", msg);
               this.sock.send(msg);
-              api.put(
-                "write-log",
-                {msg:`messge from app ${JSON.stringify(msg)}`}
-              );
             }
         },
 

@@ -106,17 +106,9 @@
 
     async function begin() {
         try {
-            // localStorage.setItem("starting to probe","begin -108")
-            let  x =  JSON.stringify(localStorage)
-            let y = JSON.parse(x)
-            PUT("write-log",y);
-            // localStorage.clear()
             $probingActive = true;
             assertValidProbeType();
-            // localStorage.setItem("probingActive",$probingActive)
             $probingFailed = false;
-            // localStorage.setItem("assertValidProbeType","completed")
-            // localStorage.setItem("probingFailed",$probingFailed)
 
             const enableSafety = $Config.settings["probing-prompts"];
 
@@ -129,22 +121,16 @@
             ].filter<Step>(isStep);
             
             await stepCompleted("CheckProbe", probeContacted);
-            // localStorage.setItem("moved after CheckProbe","true")
             if (probeType === "xyz") {
                 await stepCompleted("BitDimensions", userAcknowledged);
                 localStorage.setItem( "cutterDiameter", numberWithUnit.normalize(cutterDiameterString));
                 }
                 
                 await stepCompleted("PlaceProbeBlock", userAcknowledged);
-                PUT("write-log",{"PlaceProbeBock-userAcknowledged":$userAcknowledged,probingStarted:$probingStarted})
                 await stepCompleted("Probe", probingComplete, probingFailed);
-                await PUT("write-log",{"probingComplete-probingFailed": [$probingComplete , $probingFailed ] ,probingStarted:$probingStarted})
                 await stepCompleted("Done", userAcknowledged);
-                PUT("write-log",{"Done-userAcknowledged":$userAcknowledged ,probingStarted:$probingStarted})
-                await PUT("write-log",{"probingComplete-probingFailed": [$probingComplete , $probingFailed],probingStarted:$probingStarted})
             if (probeType === "xyz") {
                 ControllerMethods.gotoZero("xy");
-                PUT("write-log",{goToZero:"called-152",probingStarted:$probingStarted});
 
             }
         } catch (err) {
@@ -152,11 +138,9 @@
                 console.error("Error during probing:", err);
             }
         } finally {
-            PUT("write-log",{finally:"called"});
             $probingActive = false;
             $currentStep = "None";
             
-            PUT("write-log",{probingStartedInFinally:$probingStarted});
             if ($probingStarted) {
                 ControllerMethods.stop();
             }
@@ -181,7 +165,6 @@
         ...writables: Array<Writable<any>>
     ) {
         $currentStep = nextStep;
-        PUT("write-log",{msg:`$currentStep ${$currentStep}`});
         
         if (!steps.includes($currentStep)) {
             return;
@@ -189,10 +172,6 @@
 
         clearFlags();
         updateButtons();
-        PUT("write-log",{msg:`clearFlags cancelled:${$cancelled} , probeContacted:${$probeContacted} ,probingStarted: ${$probingStarted} 
-        probingComplete : ${$probingComplete} 
-        userAcknowledged : ${$userAcknowledged}`});
-
         if ($currentStep === "Probe") {
             executeProbe();
         }
@@ -202,7 +181,6 @@
             waitForChange("cancelled",cancelled),
         ]);
         
-        PUT("write-log",{msg:`race result from promise ${$currentStep + result}`,probingStarted:$probingStarted});
         
         if ($cancelled) {
             throw new Error("cancelled");
@@ -315,10 +293,8 @@
             `);
         }
 
-        PUT("write-log",{executeProbe:"Complete",probingStarted:$probingStarted});
     }
     catch (error) {
-            PUT("write-log",{executeProbe:`ERROR ${error}`});
         console.error("error while executing prob gcode",error)
         }
     }
