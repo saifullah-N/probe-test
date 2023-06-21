@@ -167,12 +167,7 @@ module.exports = new Vue({
 
         send: function(msg) {
             if (this.status == "connected") {
-              console.log("log the message sent from app.js : ", msg);
               this.sock.send(msg);
-              api.put(
-                "write-log",
-                {msg:`messge from app ${JSON.stringify(msg)}`}
-              );
             }
         },
 
@@ -424,6 +419,7 @@ module.exports = new Vue({
             delete settings.tool["tool-type"];
 
             this.config["selected-tool-settings"][selected_tool] = settings;
+            this.display_units = this.config["units"];
 
             try {
                 await api.put("config/save", this.config);
