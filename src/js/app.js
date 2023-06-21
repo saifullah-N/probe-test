@@ -420,7 +420,7 @@ module.exports = new Vue({
 
             this.config["selected-tool-settings"][selected_tool] = settings;
             console.log(this.config)
-            this.display_units = this.config["units"];
+            this.display_units = this.config.settings["units"];
 
             try {
                 await api.put("config/save", this.config);

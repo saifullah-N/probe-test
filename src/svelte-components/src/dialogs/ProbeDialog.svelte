@@ -84,7 +84,6 @@
     };
 
     $: metric = $Config.settings?.units === "METRIC";
-    localStorage.setItem("metric",String(metric))
     $: cutterDiameterMetric = numberWithUnit
         .parse(cutterDiameterString)
         ?.toMetric();
