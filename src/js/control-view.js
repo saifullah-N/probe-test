@@ -91,7 +91,7 @@ module.exports = {
                 return this.$root.display_units;
             },
             set: function(value) {
-                this.$root.config.units = value;
+                this.$root.config.settings.units = value;
                 this.$root.display_units = value;
                 this.$root.modified = true;
             }
