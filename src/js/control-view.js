@@ -91,6 +91,7 @@ module.exports = {
                 return this.$root.display_units;
             },
             set: function(value) {
+                console.log(">>>"this.$root)
                 this.$root.display_units = value;
             }
         },
